@@ -8,11 +8,6 @@ modded class PlayerBase
     private bool  m_MutantEFX_IsForceShooting  = false;
     private bool  m_MutantEFX_SuicideStarted   = false;
 
-    bool MutantEFX_IsSuicideActive()
-    {
-        return m_MutantEFX_SuicideStarted;
-    }
-
     void MutantEFX_StartSuicide()
     {
         if (m_MutantEFX_SuicideStarted) return;

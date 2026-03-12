@@ -188,16 +188,13 @@ class MutantEFX_EntityData
                 if (Math.RandomFloat01() * 100.0 < m_Config.suicide_chance)
                 {
                     PlayerBase pbSuicide = PlayerBase.Cast(player);
-                    if (pbSuicide && !pbSuicide.MutantEFX_IsSuicideActive())
+                    if (pbSuicide)
                     {
                         float playerHP = pbSuicide.GetHealth("", "Health");
-                        if (playerHP <= m_Config.suicide_hp_threshold)
+                        if (playerHP <= m_Config.suicide_hp_threshold && !pbSuicide.GetCommand_Vehicle())
                         {
-                            if (!pbSuicide.GetCommand_Vehicle())
-                            {
-                                state.suicideCD = m_Config.suicide_cooldown;
-                                pbSuicide.MutantEFX_StartSuicide();
-                            }
+                            state.suicideCD = m_Config.suicide_cooldown;
+                            GetGame().RPCSingleParam(player, MutantEFX_RPCs.RPC_FORCE_SUICIDE, null, true, ident);
                         }
                     }
                 }
@@ -276,6 +273,7 @@ class MutantEFX_Manager
     void RegisterEntity(EntityAI entity)
     {
         if (!entity || m_TrackedEntities.Contains(entity)) return;
+        if (!MutantEFX_Config.instance) return;
         MutantEFX_MutantConfig cfg = MutantEFX_Config.Get().GetConfigForEntity(entity.GetType());
         if (cfg)
             m_TrackedEntities.Insert(entity, new MutantEFX_EntityData(entity, cfg));
